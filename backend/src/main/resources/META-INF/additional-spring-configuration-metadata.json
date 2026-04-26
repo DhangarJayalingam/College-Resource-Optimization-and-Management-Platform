@@ -1,0 +1,15 @@
+{
+  "properties": [
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT signing secret for token creation and validation."
+    },
+    {
+      "name": "app.jwt.expiration-minutes",
+      "type": "java.lang.Long",
+      "defaultValue": 240,
+      "description": "JWT token expiration duration in minutes."
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: "${DB_URL:jdbc:mysql://localhost:3306/college_opt_platform?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true}"
+    username: "${DB_USERNAME:root}"
+    password: "${DB_PASSWORD:}"
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      "[hibernate.format_sql]": true
+      "[hibernate.dialect]": "org.hibernate.dialect.MySQLDialect"
+    open-in-view: false
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "${GOOGLE_CLIENT_ID:}"
+            client-secret: "${GOOGLE_CLIENT_SECRET:}"
+            client-name: Google
+            scope: openid,profile,email
+            redirect-uri: http://localhost:8080/api/v1/auth/oauth2/callback/google
+          linkedin:
+            client-id: "${LINKEDIN_CLIENT_ID:}"
+            client-secret: "${LINKEDIN_CLIENT_SECRET:}"
+            client-name: LinkedIn
+            scope: openid,profile,email
+            redirect-uri: http://localhost:8080/api/v1/auth/oauth2/callback/linkedin
+            provider: linkedin
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: email
+          linkedin:
+            authorization-uri: https://www.linkedin.com/oauth/v2/authorization
+            token-uri: https://www.linkedin.com/oauth/v2/accessToken
+            user-info-uri: https://api.linkedin.com/v2/me
+            user-name-attribute: id
+  mail:
+    host: "${MAIL_HOST:}"
+    port: ${MAIL_PORT:587}
+    username: "${MAIL_USERNAME:}"
+    password: "${MAIL_PASSWORD:}"
+    properties:
+      "[mail.smtp.auth]": true
+      "[mail.smtp.starttls.enable]": true
+
+app:
+  jwt:
+    secret: "${APP_JWT_SECRET:change-me-in-env}"
+    expiration-minutes: 240
+  oauth:
+    frontend-redirect-url: http://localhost:5173
+  mail:
+    from: "${MAIL_FROM:${MAIL_USERNAME:no-reply@collegeopt.local}}"
+  backend-base-url: "${APP_BACKEND_BASE_URL:http://localhost:8080}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
